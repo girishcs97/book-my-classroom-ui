@@ -9,13 +9,16 @@ import {
     MDBTabsItem,
     MDBTabsLink,
     MDBTabsPane,
-    MDBTabsContent
+    MDBTabsContent,
 } from 'mdb-react-ui-kit';
 import logo from '../Images/logo.svg';
 import axios from 'axios';
 import toast from 'react-hot-toast';
+import { useNavigate } from 'react-router-dom'
+import { SIGNIN_URL, SIGNUP_URL, token } from '../URLconstants';
 
 const UserAuth = () => {
+    const history = useNavigate();
     const [justifyActive, setJustifyActive] = useState('tab1');
     const [btndisabled, setbtnDisabled] = useState(false)
     const [username, setUserName] = useState('');
@@ -23,6 +26,7 @@ const UserAuth = () => {
     const [mailid, setMailid] = useState('');
     const [phoneNo, setPhoneNo] = useState('');
     const [name, setName] = useState('');
+    const [course, setCourse] = useState('Computer Science');
     const [confirmPassword, setConfirmPassword] = useState('');
 
     const handleJustifyClick = (value) => {
@@ -56,15 +60,83 @@ const UserAuth = () => {
 
     const onSignup = async () => {
         setbtnDisabled(true)
+        try {
+            const response = await axios({
+                method: 'post', url: SIGNUP_URL, data: {
+                    csrfmiddlewaretoken: token,
+                    first_name: name,
+                    last_name: name,
+                    username: username,
+                    password: password,
+                    'confirm-password': confirmPassword,
+                    phone_number: phoneNo,
+                    email: mailid,
+                    course: course
+                }
+            });
+
+            if (response && response.status === 200) {
+                toast.success("Registered Succesfully")
+                setJustifyActive('tab1');
+            }
+            setUserName('')
+            setPassword('')
+            setName('')
+            setMailid('')
+            setPhoneNo('')
+            setCourse('')
+            setConfirmPassword('')
+        }
+
+        catch (error) {
+            if (error.response) {
+                toast.error(error.response.data.message);
+            } else if (error.request) {
+                toast.error('No response received from the server');
+            } else {
+                toast.error('Error: ' + error.message);
+            }
+
+        }
+        
         setbtnDisabled(false)
-        setUserName('');
-        setPassword('');
 
     }
     const onSignIn = async () => {
         setbtnDisabled(true)
-        setbtnDisabled(false)
+        try {
+            const response = await axios({
+                method: 'post', url: SIGNIN_URL, data: {
+                    csrfmiddlewaretoken: token,
+                    username: username,
+                    password: password,
+                }
+            });
 
+            if (response && response.status === 200) {
+                toast.success("Login Succesfull")
+                history("/faculty")
+            }
+            setUserName('')
+            setPassword('')
+        }
+
+        catch (error) {
+            if (error.response) {
+                toast.error(error.response.data.message);
+            } else if (error.request) {
+                toast.error('No response received from the server');
+            } else {
+                toast.error('Error: ' + error.message);
+            }
+
+        }
+        
+        setbtnDisabled(false)
+    }
+    const onSelectCourse = (e)=>{
+        console.log("value selected",e.target.value)
+        setCourse(e.target.value)
     }
     return (
         <div className='bg-color'>
@@ -75,7 +147,7 @@ const UserAuth = () => {
                             className="custom-img" alt="" style={{ width: '170%', height: '100%' }} />
                     </MDBCol>
                     <MDBCol col='4' md='6'>
-                        <div className={`vertical-center border-style ${justifyActive === 'tab1'?'login-page':'signup-page'}`}>
+                        <div className={`vertical-center border-style ${justifyActive === 'tab1' ? 'login-page' : 'signup-page'}`}>
                             <p className='logo-header'>BookMyClassroom</p>
                             <MDBTabs pills justify className='mb-3 d-flex flex-row justify-content-between'>
                                 <MDBTabsItem>
@@ -97,7 +169,7 @@ const UserAuth = () => {
                                     <p className='margin-bottom2'>Password</p>
                                     <MDBInput wrapperClass='mb-4' type='password' placeholder="password" onChange={(e) => onChangeText(e, 'password')} />
                                     <button className='btn-sign mb-3' onClick={() => { onSignIn() }} disabled={btndisabled}>Sign In</button>
-                                    <p className="text-center">Not a member? <a href="#!" onClick={() => handleJustifyClick('tab2')} active={justifyActive === 'tab2'}>Register</a></p>
+                                    <p className="text-center mt-4">Not a member? <a href="#!" onClick={() => handleJustifyClick('tab2')} active={justifyActive === 'tab2'}>Register</a></p>
 
                                 </MDBTabsPane>
 
@@ -126,9 +198,20 @@ const UserAuth = () => {
                                             <MDBInput wrapperClass='mb-4' type='password' placeholder="password" onChange={(e) => onChangeText(e, 'confirmPassword')} value={confirmPassword} />
                                         </MDBCol>
                                     </MDBRow>
-                                    <button className='btn-sign' onClick={() => onSignup()} disabled={btndisabled}>Sign Up</button>
+                                    <MDBRow>
+                                        <MDBCol>
+                                            <p className='margin-bottom2'>Course</p>
+                                            <select name="selectedCourse" className='form-control' onChange={(e)=>onSelectCourse(e)}>                                                <option value="computerscience">Computer Science</option>
+                                                <option value="informationtechnology">Information Technology</option>
+                                                <option value="dataanalytics">Data Analytics</option>
+                                                <option value="projectmanagement">Project Management</option>
+                                                <option value="businessanalytics">Business Analytics</option>
+                                                <option value="management">Management</option>
+                                            </select>
+                                        </MDBCol>
+                                    </MDBRow>
+                                    <button className='btn-sign mt-4' onClick={() => onSignup()} disabled={btndisabled}>Sign Up</button>
                                 </MDBTabsPane>
-
                             </MDBTabsContent>
                         </div>
 

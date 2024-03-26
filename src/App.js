@@ -1,5 +1,6 @@
 import './App.css';
-import Faculty from './Faculty/faculty';
+import FacultyPage from './FacultyPage/facultyPage';
+import SlotSelect from './SlotSelect/slotSelect';
 import UserAuth from './UserAuth/userAuth';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 
@@ -9,7 +10,8 @@ const App = () => {
     <BrowserRouter>
     <Routes>
       <Route exact path="/" element={<UserAuth/>} />
-      <Route exact path="/faculty" element={<Faculty/>} />
+      <Route exact path="/faculty" element={<FacultyPage/>} />
+      <Route exact path="/slotselect" element={<SlotSelect/>} />
     </Routes>
   </BrowserRouter>
   )

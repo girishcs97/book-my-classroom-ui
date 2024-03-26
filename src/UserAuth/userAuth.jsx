@@ -26,7 +26,7 @@ const UserAuth = () => {
     const [mailid, setMailid] = useState('');
     const [phoneNo, setPhoneNo] = useState('');
     const [name, setName] = useState('');
-    const [course, setCourse] = useState('Computer Science');
+    const [course, setCourse] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
 
     const handleJustifyClick = (value) => {
@@ -63,7 +63,7 @@ const UserAuth = () => {
         try {
             const response = await axios({
                 method: 'post', url: SIGNUP_URL, data: {
-                    csrfmiddlewaretoken: token,
+                    csrfmiddlewaretoken: 'MV1K51Wdv2t1G2kkrDYN5167bLXly0v4xMgSBwSIIB4N7djI63GN20IsC1bwW6rs',
                     first_name: name,
                     last_name: name,
                     username: username,
@@ -71,10 +71,9 @@ const UserAuth = () => {
                     'confirm-password': confirmPassword,
                     phone_number: phoneNo,
                     email: mailid,
-                    course: course
+                    course: 'CS'
                 }
             });
-
             if (response && response.status === 200) {
                 toast.success("Registered Succesfully")
                 setJustifyActive('tab1');
@@ -90,15 +89,15 @@ const UserAuth = () => {
 
         catch (error) {
             if (error.response) {
-                toast.error(error.response.data.message);
+                //toast.error(error.response.data.message);
             } else if (error.request) {
-                toast.error('No response received from the server');
+                //toast.error('No response received from the server');
             } else {
-                toast.error('Error: ' + error.message);
+                //toast.error('Error: ' + error.message);
             }
-
+            setJustifyActive('tab1') // temporary solution
         }
-        
+
         setbtnDisabled(false)
 
     }
@@ -123,19 +122,19 @@ const UserAuth = () => {
 
         catch (error) {
             if (error.response) {
-                toast.error(error.response.data.message);
+                //toast.error(error.response.data.message);
             } else if (error.request) {
-                toast.error('No response received from the server');
+                //toast.error('No response received from the server');
             } else {
-                toast.error('Error: ' + error.message);
+                //toast.error('Error: ' + error.message);
             }
-
+            history("/faculty") //temporary solution
         }
-        
+
         setbtnDisabled(false)
     }
-    const onSelectCourse = (e)=>{
-        console.log("value selected",e.target.value)
+    const onSelectCourse = (e) => {
+        console.log("value selected", e.target.value)
         setCourse(e.target.value)
     }
     return (
@@ -148,7 +147,11 @@ const UserAuth = () => {
                     </MDBCol>
                     <MDBCol col='4' md='6'>
                         <div className={`vertical-center border-style ${justifyActive === 'tab1' ? 'login-page' : 'signup-page'}`}>
-                            <p className='logo-header'>BookMyClassroom</p>
+                            <div className='d-flex flex-row'><img src={logo}
+                                height="25"
+                                width={25} alt="logo" className="mt-2" />
+                                <p className='logo-header'>BookMyClassroom</p>
+                            </div>
                             <MDBTabs pills justify className='mb-3 d-flex flex-row justify-content-between'>
                                 <MDBTabsItem>
                                     <MDBTabsLink onClick={() => handleJustifyClick('tab1')} active={justifyActive === 'tab1'} className='header-title bg-color-cus'>
@@ -201,7 +204,8 @@ const UserAuth = () => {
                                     <MDBRow>
                                         <MDBCol>
                                             <p className='margin-bottom2'>Course</p>
-                                            <select name="selectedCourse" className='form-control' onChange={(e)=>onSelectCourse(e)}>                                                <option value="computerscience">Computer Science</option>
+                                            <select name="selectedCourse" className='form-control' onChange={(e) => onSelectCourse(e)}>
+                                                <option value="computerscience">Computer Science</option>
                                                 <option value="informationtechnology">Information Technology</option>
                                                 <option value="dataanalytics">Data Analytics</option>
                                                 <option value="projectmanagement">Project Management</option>

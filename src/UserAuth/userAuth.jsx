@@ -15,7 +15,7 @@ import logo from '../Images/logo.svg';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom'
-import { SIGNIN_URL, SIGNUP_URL, token } from '../URLconstants';
+import { SIGNIN_URL, SIGNUP_URL } from '../URLconstants';
 
 const UserAuth = () => {
     const history = useNavigate();
@@ -63,12 +63,10 @@ const UserAuth = () => {
         try {
             const response = await axios({
                 method: 'post', url: SIGNUP_URL, data: {
-                    csrfmiddlewaretoken: 'MV1K51Wdv2t1G2kkrDYN5167bLXly0v4xMgSBwSIIB4N7djI63GN20IsC1bwW6rs',
-                    first_name: name,
-                    last_name: name,
+                    name:name,
                     username: username,
                     password: password,
-                    'confirm-password': confirmPassword,
+                    confirm_password: confirmPassword,
                     phone_number: phoneNo,
                     email: mailid,
                     course: 'CS'
@@ -89,11 +87,11 @@ const UserAuth = () => {
 
         catch (error) {
             if (error.response) {
-                //toast.error(error.response.data.message);
+                toast.error(error.response.data.message);
             } else if (error.request) {
-                //toast.error('No response received from the server');
+                toast.error('No response received from the server');
             } else {
-                //toast.error('Error: ' + error.message);
+                toast.error('Error: ' + error.message);
             }
             setJustifyActive('tab1') // temporary solution
         }
@@ -106,7 +104,6 @@ const UserAuth = () => {
         try {
             const response = await axios({
                 method: 'post', url: SIGNIN_URL, data: {
-                    csrfmiddlewaretoken: token,
                     username: username,
                     password: password,
                 }
@@ -122,13 +119,12 @@ const UserAuth = () => {
 
         catch (error) {
             if (error.response) {
-                //toast.error(error.response.data.message);
+                toast.error(error.response.data.message);
             } else if (error.request) {
-                //toast.error('No response received from the server');
+                toast.error('No response received from the server');
             } else {
-                //toast.error('Error: ' + error.message);
+                toast.error('Error: ' + error.message);
             }
-            history("/faculty") //temporary solution
         }
 
         setbtnDisabled(false)
